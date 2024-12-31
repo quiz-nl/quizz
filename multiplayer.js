@@ -78,10 +78,7 @@ function createGame() {
     gameState.teamCode = gameCode;
     gameState.isHost = true;
 
-    // Test eerst de database connectie
-    console.log("Database reference:", window.db);
-    
-    const gameRef = window.db.ref(`games/${gameCode}`);
+    const gameRef = firebase.database().ref(`games/${gameCode}`);
     gameRef.set({
         host: gameState.playerName,
         players: {[gameState.playerName]: 0},
@@ -101,7 +98,7 @@ function createGame() {
 function joinGame() {
     const gameCode = prompt('Voer de game code in:').toUpperCase();
     if (gameCode) {
-        const gameRef = window.db.ref(`games/${gameCode}`);
+        const gameRef = firebase.database().ref(`games/${gameCode}`);
         gameRef.once('value')
             .then((snapshot) => {
                 if (snapshot.exists()) {
@@ -141,7 +138,7 @@ function showGameInterface() {
     document.querySelector('#quiz-container').prepend(gameDiv);
     
     // Luister naar updates
-    const gameRef = window.db.ref(`games/${gameState.teamCode}`);
+    const gameRef = firebase.database().ref(`games/${gameState.teamCode}`);
     gameRef.on('value', updateGameState);
 }
 
@@ -174,7 +171,7 @@ function updateGameState(snapshot) {
 
 // Debug functie
 window.testFirebase = function() {
-    const testRef = window.db.ref('test');
+    const testRef = firebase.database().ref('test');
     testRef.set({
         test: 'Dit is een test'
     }).then(() => {
