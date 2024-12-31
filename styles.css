@@ -43,13 +43,30 @@ body {
 }
 
 .player-card {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 10px;
     margin: 5px 0;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.2s;
+}
+
+.player-card:hover {
+    transform: translateY(-2px);
+}
+
+.player-info {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+}
+
+.player-score {
+    background: rgba(76, 175, 80, 0.2);
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
 }
 
 .player-card::before {
