@@ -78,15 +78,19 @@ function createGame() {
     gameState.teamCode = gameCode;
     gameState.isHost = true;
 
-    window.dbSet(window.dbRef(window.db, `games/${gameCode}`), {
+    const gameRef = window.dbRef(`games/${gameCode}`);
+    gameRef.set({
         host: gameState.playerName,
         players: {[gameState.playerName]: 0},
         currentQuestion: 0,
         active: true
+    }).then(() => {
+        alert(`Deel deze code met andere spelers: ${gameCode}`);
+        showGameInterface();
+    }).catch(error => {
+        console.error("Error creating game:", error);
+        alert("Er ging iets mis bij het maken van de game.");
     });
-
-    alert(`Deel deze code met andere spelers: ${gameCode}`);
-    showGameInterface();
 }
 
 function joinGame() {
