@@ -22,32 +22,30 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
+    <!-- Initialiseer Firebase -->
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAoJasNpJnK06Hoar7U0eX4fybJmE2qitQ",
             authDomain: "quiz-nl.firebaseapp.com",
             projectId: "quiz-nl",
-            storageBucket: "quiz-nl.firebasestorage.app",
+            storageBucket: "quiz-nl.appspot.com",
             messagingSenderId: "1091830798608",
             appId: "1:1091830798608:web:3894c2f043a08d3a08ad95",
             measurementId: "G-DB4N2VJ2L0",
-            databaseURL: "https://quiz-nl-default-rtdb.europe-west1.firebasedatabase.app" // Voeg deze toe!
+            databaseURL: "https://quiz-nl-default-rtdb.europe-west1.firebasedatabase.app"
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const analytics = getAnalytics(app);
-
-        // Maak Firebase beschikbaar voor andere scripts
-        window.db = db;
-        window.dbRef = ref;
-        window.dbSet = set;
-        window.dbOnValue = onValue;
+        firebase.initializeApp(firebaseConfig);
+        
+        // Maak Firebase functies globaal beschikbaar
+        window.db = firebase.database();
+        window.dbRef = (path) => firebase.database().ref(path);
+        window.dbSet = (ref, data) => ref.set(data);
+        window.dbOnValue = (ref, callback) => ref.on('value', callback);
     </script>
 
     <script src="multiplayer.js"></script>
