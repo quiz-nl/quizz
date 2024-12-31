@@ -144,9 +144,13 @@ function showGameInterface() {
 
 function startGameForAll() {
     if (gameState.isHost) {
-        window.dbRef(`games/${gameState.teamCode}`).update({
+        const gameRef = firebase.database().ref(`games/${gameState.teamCode}`);
+        gameRef.update({
             gameStarted: true,
             currentQuestion: 0
+        }).catch(error => {
+            console.error("Error starting game:", error);
+            alert("Er ging iets mis bij het starten van de game: " + error.message);
         });
     }
 }
@@ -171,9 +175,11 @@ function updateGameState(snapshot) {
 
 // Debug functie
 window.testFirebase = function() {
+    console.log("Testing Firebase connection...");
     const testRef = firebase.database().ref('test');
     testRef.set({
-        test: 'Dit is een test'
+        test: 'Dit is een test',
+        timestamp: firebase.database.ServerValue.TIMESTAMP
     }).then(() => {
         console.log('Firebase test succesvol');
         alert('Firebase connectie werkt!');
