@@ -1,111 +1,70 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
-    color: #fff;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
-    padding: 20px;
     min-height: 100vh;
+    padding: 20px;
 }
 
 #quiz-container {
     max-width: 800px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .btn {
-    background: #007bff;
+    background: #4CAF50;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    font-size: 16px;
+    transition: transform 0.2s, background 0.2s;
+    margin: 5px;
 }
 
 .btn:hover {
-    background: #0056b3;
+    transform: translateY(-2px);
+    background: #45a049;
 }
 
-.navigation {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+.multiplayer-info {
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-.timer-circle {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: conic-gradient(
-        #2196F3 calc(var(--progress)),
-        #ccc calc(var(--progress))
-    );
+.player-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 5px 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 10px auto;
+    gap: 10px;
 }
 
-.timer-circle span {
-    background: white;
-    border-radius: 50%;
-    padding: 15px;
-    color: #333;
-    font-weight: bold;
+.player-card::before {
+    content: '👤';
+    font-size: 20px;
 }
 
-.achievement-unlock {
+/* Voeg een feestelijk thema toe */
+.confetti-background {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0,0,0,0.8);
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    animation: slideIn 0.5s ease-out;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-}
-
-.leaderboard {
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
-}
-
-.leaderboard table {
+    top: 0;
+    left: 0;
     width: 100%;
-    border-collapse: collapse;
-}
-
-.leaderboard th, .leaderboard td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.quiz-master-controls {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 15px;
-    border-radius: 8px;
-    z-index: 1000;
-}
-
-#qrcode {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin: 20px auto;
-    width: fit-content;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
 } 
