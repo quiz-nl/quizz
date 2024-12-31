@@ -110,26 +110,56 @@ function joinGame() {
 
 function showGameInterface() {
     const gameDiv = document.createElement('div');
-    gameDiv.className = 'multiplayer-info';
+    gameDiv.className = 'multiplayer-info animate__animated animate__fadeIn';
     gameDiv.innerHTML = `
-        <h3>Game Code: ${gameState.teamCode}</h3>
-        <div id="players-list"></div>
+        <h3>🎮 Game Code: ${gameState.teamCode}</h3>
+        <div class="game-status">
+            <p>Host: ${gameState.playerName}</p>
+            <div id="players-list" class="players-grid"></div>
+        </div>
+        ${gameState.isHost ? `
+            <div class="host-controls">
+                <button onclick="startGameForAll()" class="btn">Start Game voor Iedereen</button>
+            </div>
+        ` : ''}
     `;
+    
     document.querySelector('#quiz-container').prepend(gameDiv);
     
     // Luister naar updates
-    window.dbOnValue(window.dbRef(window.db, `games/${gameState.teamCode}`), updateGameState);
+    window.dbRef(`games/${gameState.teamCode}`).on('value', (snapshot) => {
+        updateGameState(snapshot);
+    });
+}
+
+function startGameForAll() {
+    if (gameState.isHost) {
+        window.dbRef(`games/${gameState.teamCode}`).update({
+            gameStarted: true,
+            currentQuestion: 0
+        });
+    }
 }
 
 function updateGameState(snapshot) {
     const data = snapshot.val();
+    if (!data) return;
+
     const playersList = document.getElementById('players-list');
     if (playersList && data.players) {
         playersList.innerHTML = Object.entries(data.players)
             .map(([name, score]) => `
-                <div class="player-card">
-                    ${name}: ${score} punten
+                <div class="player-card animate__animated animate__fadeIn">
+                    <div class="player-info">
+                        <span class="player-name">${name}</span>
+                        <span class="player-score">${score} pts</span>
+                    </div>
                 </div>
             `).join('');
+    }
+
+    if (data.gameStarted && !gameStarted) {
+        gameStarted = true;
+        startQuiz();
     }
 } 
