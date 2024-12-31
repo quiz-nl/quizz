@@ -78,33 +78,47 @@ function createGame() {
     gameState.teamCode = gameCode;
     gameState.isHost = true;
 
-    const gameRef = window.dbRef(`games/${gameCode}`);
+    // Test eerst de database connectie
+    console.log("Database reference:", window.db);
+    
+    const gameRef = window.db.ref(`games/${gameCode}`);
     gameRef.set({
         host: gameState.playerName,
         players: {[gameState.playerName]: 0},
         currentQuestion: 0,
-        active: true
+        active: true,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
     }).then(() => {
+        console.log("Game created successfully");
         alert(`Deel deze code met andere spelers: ${gameCode}`);
         showGameInterface();
     }).catch(error => {
         console.error("Error creating game:", error);
-        alert("Er ging iets mis bij het maken van de game.");
+        alert("Er ging iets mis bij het maken van de game: " + error.message);
     });
 }
 
 function joinGame() {
     const gameCode = prompt('Voer de game code in:').toUpperCase();
     if (gameCode) {
-        window.dbOnValue(window.dbRef(window.db, `games/${gameCode}`), (snapshot) => {
-            if (snapshot.exists()) {
-                gameState.teamCode = gameCode;
-                window.dbSet(window.dbRef(window.db, `games/${gameCode}/players/${gameState.playerName}`), 0);
+        const gameRef = window.db.ref(`games/${gameCode}`);
+        gameRef.once('value')
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    gameState.teamCode = gameCode;
+                    return gameRef.child(`players/${gameState.playerName}`).set(0);
+                } else {
+                    throw new Error('Game niet gevonden!');
+                }
+            })
+            .then(() => {
+                console.log("Successfully joined game");
                 showGameInterface();
-            } else {
-                alert('Game niet gevonden!');
-            }
-        });
+            })
+            .catch(error => {
+                console.error("Error joining game:", error);
+                alert(error.message);
+            });
     }
 }
 
@@ -114,7 +128,7 @@ function showGameInterface() {
     gameDiv.innerHTML = `
         <h3>🎮 Game Code: ${gameState.teamCode}</h3>
         <div class="game-status">
-            <p>Host: ${gameState.playerName}</p>
+            <p>Speler: ${gameState.playerName}</p>
             <div id="players-list" class="players-grid"></div>
         </div>
         ${gameState.isHost ? `
@@ -127,9 +141,8 @@ function showGameInterface() {
     document.querySelector('#quiz-container').prepend(gameDiv);
     
     // Luister naar updates
-    window.dbRef(`games/${gameState.teamCode}`).on('value', (snapshot) => {
-        updateGameState(snapshot);
-    });
+    const gameRef = window.db.ref(`games/${gameState.teamCode}`);
+    gameRef.on('value', updateGameState);
 }
 
 function startGameForAll() {
@@ -157,9 +170,18 @@ function updateGameState(snapshot) {
                 </div>
             `).join('');
     }
+}
 
-    if (data.gameStarted && !gameStarted) {
-        gameStarted = true;
-        startQuiz();
-    }
-} 
+// Debug functie
+window.testFirebase = function() {
+    const testRef = window.db.ref('test');
+    testRef.set({
+        test: 'Dit is een test'
+    }).then(() => {
+        console.log('Firebase test succesvol');
+        alert('Firebase connectie werkt!');
+    }).catch(error => {
+        console.error('Firebase test mislukt:', error);
+        alert('Firebase connectie mislukt: ' + error.message);
+    });
+}; 
